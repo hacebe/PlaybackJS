@@ -70,20 +70,20 @@
 
 	}
 
-	Playback.prototype.startRecording = function (deviceName, eventName) {
+	Playback.prototype.startRecording = function (deviceName, eventName, replace ) {
 		if(!this.config[deviceName]) this.config[deviceName] = {}
 		if(!this.config[deviceName][eventName]) this.config[deviceName][eventName] = {};
 
 		this.config[deviceName][eventName].allowRecording = true;
+
+		this._clearEvents ();
 
 		this.sessionStartTime = Date.now ();
 
 		this._prepareDevice(deviceName, eventName);
 	}
 
-	Playback.prototype.stopRecording = function ( deviceName, eventName, replace ) {
-
-		this._clearEvents ()
+	Playback.prototype.stopRecording = function ( deviceName, eventName ) {
 
 		this.config[deviceName][eventName].allowRecording = false;
 	}
@@ -153,7 +153,8 @@
 			var e = $this.events[++i];
 
 			if(i == $this.events.length - 1) {
-				clearInterval(interval)
+				clearInterval(interval);
+				return;
 			}
 
 			$this.devices.Mouse.pointer.moveTo(e.pos);
