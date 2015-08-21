@@ -81,7 +81,10 @@
 		this._prepareDevice(deviceName, eventName);
 	}
 
-	Playback.prototype.stopRecording = function ( deviceName, eventName ) {
+	Playback.prototype.stopRecording = function ( deviceName, eventName, replace ) {
+
+		this._clearEvents ()
+
 		this.config[deviceName][eventName].allowRecording = false;
 	}
 
@@ -136,6 +139,10 @@
 
 	Playback.prototype.stop = function () {
 		clearInterval(this.loop);
+	}
+
+	Playback.prototype._clearEvents = function () {
+		this.events = [];
 	}
 
 	Playback.prototype.replay = function () {
