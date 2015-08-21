@@ -72,7 +72,9 @@
 
 	Playback.prototype.startRecording = function (deviceName, eventName) {
 		if(!this.config[deviceName]) this.config[deviceName] = {}
-		if(!this.config[deviceName][eventName]) this.config[deviceName][eventName] = {allowRecording: true};
+		if(!this.config[deviceName][eventName]) this.config[deviceName][eventName] = {};
+
+		this.config[deviceName][eventName].allowRecording = true;
 
 		this.sessionStartTime = Date.now ();
 
