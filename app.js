@@ -14,6 +14,8 @@
 			Time: 0,
 		}
 
+		window.loop = null;
+
 		this.config = {
 
 		}
@@ -24,16 +26,9 @@
 			}
 		}
 
-		this.startTime;
-
-		this.loop;
-
-		if(config.start && config.start == true)
-			this.init ();
-
 	}
 
-	Playback.prototype.init = function(){
+	Playback.prototype.replay = function(){
 
 		var $this = this;
 
@@ -41,7 +36,7 @@
 
 		this.startTime = Date.now ();
 
-		this.loop = setInterval ( function () {
+		window.loop = setInterval ( function () {
 
 			var now = Date.now();
 
@@ -49,10 +44,18 @@
 
 			var evtTime = $this.allEventsTime[$this.current.Index + 1];
 
+
 			if( evtTime && $this.current.Time >= evtTime) {
 
 				$this.current.Index += 1;
 				$this.current.Event = $this.events[$this.current.Index];
+				try{
+					$this.devices.Mouse.pointer.moveTo($this.current.Event.pos);
+					
+				}catch(e){
+					//console.error("An error ocurred: " + e + " , " + $this.current.Event);
+				}
+
 
 			}
 
@@ -66,7 +69,9 @@
 			}
 			
 
-		}, 40);
+		}, 1);
+
+
 
 	}
 
@@ -76,7 +81,8 @@
 
 		this.config[deviceName][eventName].allowRecording = true;
 
-		this._clearEvents ();
+		if(replace)
+			this._clearEvents ();
 
 		this.sessionStartTime = Date.now ();
 
@@ -138,14 +144,18 @@
 	}
 
 	Playback.prototype.stop = function () {
-		clearInterval(this.loop);
+		clearInterval(window.loop);
+
+		this.current.Index = -1;
+		this.current.Event = null;
+		this.current.Time = 0;
 	}
 
 	Playback.prototype._clearEvents = function () {
 		this.events = [];
 	}
 
-	Playback.prototype.replay = function () {
+/*	Playback.prototype.replay = function () {
 		var $this = this;
 		var i = -1;
 		var interval = setInterval(function () {
@@ -160,7 +170,7 @@
 			$this.devices.Mouse.pointer.moveTo(e.pos);
 
 		}, 16);
-	}
+	}*/
 
 	function Pointer () {
 		this.dom = document.createElement("span");

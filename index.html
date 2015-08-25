@@ -6,6 +6,10 @@
 </head>
 <body>
 	
+	<input type="button" value="Start Recording" onclick='pb.startRecording("mouse", "mousemove", true);'>
+	<input type="button" value="Stop Recording" onclick='pb.stopRecording("mouse", "mousemove");'>
+	<input type="button" value="Replay" onclick='pb.replay();'>
+
 	<script src="json.js"></script>
 	<script src="app.js"></script>
 </body>
