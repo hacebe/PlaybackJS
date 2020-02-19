@@ -1,0 +1,15 @@
+html, body{
+	height: 100%;
+}
+
+#messages {
+	width: 25%;
+	background-color: #ccc;
+	height: 100%;
+	display: inline-block;
+}
+
+#videos {
+	display: inline-block;
+	width: 70%;
+}

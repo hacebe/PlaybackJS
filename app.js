@@ -1,15 +1,16 @@
 //Custom functions
 
-function newChatMessage(message){
+function newChatMessage(message, pb){
 	var chatEl = document.getElementById('messages');
 	var chatContent = chatEl.innerHTML + message + "<br>";
 	chatEl.innerHTML = chatContent;
 }
-function startVideo(video){
+function startVideo(video, pb){
+
+
 	var videoEl = document.getElementById('videos');
-	var videoPlayer = document.createElement('image');
-	videoPlayer.src="data:image/png;base64," + video
-	videoEl.innerHTML = videoPlayer;
+	var videoPlayer = "<video autoplay id=\"" + video.videoId + "\" src=\"data:video/webm;base64," + pb[video.videoId] + "\">";
+	videoEl.innerHTML += videoPlayer;
 }
 
 (function ( ) {
@@ -40,9 +41,9 @@ function startVideo(video){
 
 	}
 
-	Playback.prototype._evtTrigger = function(data){
+	Playback.prototype._evtTrigger = function(data, pb){
 		//console.log(data.action, data.content);
-		window[data.action](data.content);
+		window[data.action](data.content, pb);
 	}
 
 	Playback.prototype.init = function(){
@@ -67,9 +68,12 @@ function startVideo(video){
 			if( evtTime && $this.current.Time >= evtTime) {
 
 				$this.current.Index += 1;
-				$this.current.Event = $this.events[$this.current.Index];
+				$this.current.Event = $this.events[$this.current.Index];			
+				
+				$this._evtTrigger($this.current.Event, $this.resources);
 
-				$this._evtTrigger($this.current.Event);
+				
+
 
 			}
 
@@ -115,5 +119,3 @@ var pb = new Playback({
 	res: recordedSession.resources,
 	start: true
 });
-
-console.log(pb);
