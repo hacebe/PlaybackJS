@@ -1,10 +1,27 @@
+//Custom functions
+
+function newChatMessage(message){
+	var chatEl = document.getElementById('messages');
+	var chatContent = chatEl.innerHTML + message + "<br>";
+	chatEl.innerHTML = chatContent;
+}
+function startVideo(video){
+	var videoEl = document.getElementById('videos');
+	var videoPlayer = document.createElement('image');
+	videoPlayer.src="data:image/png;base64," + video
+	videoEl.innerHTML = videoPlayer;
+}
+
 (function ( ) {
+
+	
 
 	function Playback ( config ) {
 		if(!config) config = {};
 
 		this.state = 'idle',
 		this.events = config.events || [];
+		this.resources = config.res;
 
 		this.allEventsTime = {};
 
@@ -23,6 +40,11 @@
 
 	}
 
+	Playback.prototype._evtTrigger = function(data){
+		//console.log(data.action, data.content);
+		window[data.action](data.content);
+	}
+
 	Playback.prototype.init = function(){
 
 		var $this = this;
@@ -31,7 +53,10 @@
 
 		this.startTime = Date.now ();
 
+		console.log(this);
+
 		this.loop = setInterval ( function () {
+
 
 			var now = Date.now();
 
@@ -43,6 +68,8 @@
 
 				$this.current.Index += 1;
 				$this.current.Event = $this.events[$this.current.Index];
+
+				$this._evtTrigger($this.current.Event);
 
 			}
 
@@ -60,6 +87,8 @@
 
 	}
 
+	
+
 	Playback.prototype._getEventsTime = function () {
 		var $this = this;
 
@@ -70,6 +99,7 @@
 				$this.allEventsTime[index] = time;
 			}
 		})
+		
 	}
 
 	Playback.prototype.stop = function () {
@@ -82,5 +112,8 @@
 
 var pb = new Playback({
 	events : recordedSession.events,
+	res: recordedSession.resources,
 	start: true
 });
+
+console.log(pb);
