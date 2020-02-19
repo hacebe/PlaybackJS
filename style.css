@@ -19,3 +19,15 @@ html, body{
 #videos {
 	height: 100%
 }
+
+#controls {	
+	width: 300px;
+	position: fixed;
+	bottom: 12px;
+    background-color: rgba(255,255,255,0.9);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-left: 50%;
+    margin-right: 50%;
+	
+}
