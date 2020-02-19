@@ -1,15 +1,21 @@
 html, body{
 	height: 100%;
+	font-family: "Ubuntu";
+}
+
+.fill { 
+    max-height: 100%;
+    height: 100%;
 }
 
 #messages {
-	width: 25%;
-	background-color: #ccc;
+	background-color: #fff6e1;
 	height: 100%;
-	display: inline-block;
+    max-height: 100%;
+
+	overflow-x: auto;
 }
 
 #videos {
-	display: inline-block;
-	width: 70%;
+	height: 100%
 }

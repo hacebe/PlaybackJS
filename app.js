@@ -1,16 +1,43 @@
 //Custom functions
+var chatScroll;
+var scrollToBottom = true;
+
+function chatMsg(msg){
+	var chatEl = $('#messages');
+
+	var chatContent = chatEl.html() + msg + "<br>";
+	chatEl.html(chatContent);
+
+	if(scrollToBottom)
+		chatEl.scrollTop(chatEl.height());
+
+}
+
+$('#messages').on("scroll", function(a, b, c){
+	scrollToBottom = false;
+	chatScroll = $('#messages');
+	var scrollHeight = document.getElementById('messages').scrollHeight;
+	var scrollPosition = $(chatScroll).scrollTop() + $(chatScroll).height();
+	
+	if (scrollHeight == scrollPosition){
+		scrollToBottom = true;
+	}
+})
 
 function newChatMessage(message, pb){
-	var chatEl = document.getElementById('messages');
-	var chatContent = chatEl.innerHTML + message + "<br>";
-	chatEl.innerHTML = chatContent;
+	chatMsg(message);
 }
 function startVideo(video, pb){
+	var videoEl = $('#videos .row');
+	var videoPlayer = $("<div class='col-sm-4' id=\"" + video.videoId + "\"><div class='card'><video class='card-img-top' autoplay src=\"resources/" + pb.sessionId + "/" + video.videoId + ".webm\"></video><div class='card-body p-1 text-center'><div class='card-text'>"+ video.username +"</div></div></div></div>");
+	videoEl.append(videoPlayer);
 
-
-	var videoEl = document.getElementById('videos');
-	var videoPlayer = "<video autoplay id=\"" + video.videoId + "\" src=\"data:video/webm;base64," + pb[video.videoId] + "\">";
-	videoEl.innerHTML += videoPlayer;
+	chatMsg("<small class='text-muted'><em>"+video.username + " - turned the video on</em></small>");
+}
+function stopVideo(video, pb){
+	var videoEl = $('#' + video.videoId);
+	videoEl.remove();
+	chatMsg("<small class='text-muted'><em>"+video.username + " - turned the video off</em></small>");
 }
 
 (function ( ) {
@@ -23,6 +50,8 @@ function startVideo(video, pb){
 		this.state = 'idle',
 		this.events = config.events || [];
 		this.resources = config.res;
+
+		this.sessionId = config.sessionId;
 
 		this.allEventsTime = {};
 
@@ -54,8 +83,6 @@ function startVideo(video, pb){
 
 		this.startTime = Date.now ();
 
-		console.log(this);
-
 		this.loop = setInterval ( function () {
 
 
@@ -70,22 +97,18 @@ function startVideo(video, pb){
 				$this.current.Index += 1;
 				$this.current.Event = $this.events[$this.current.Index];			
 				
-				$this._evtTrigger($this.current.Event, $this.resources);
+				$this._evtTrigger($this.current.Event, $this);
 
-				
+				if ( $this.current.Index == $this.events.length-1 ) {
 
+					$this.current.Event = null;
 
-			}
+					$this.stop ();
 
-			else if ( $this.current.Time >= $this.allEventsTime[$this.events.length -1] ) {
+					chatMsg("<div class='text-center'>End of session!</div>");
+				}
 
-				$this.current.Event = null;
-
-				$this.stop ();
-
-				console.debug('end');
-			}
-			
+			}			
 
 		}, 40);
 
@@ -116,6 +139,6 @@ function startVideo(video, pb){
 
 var pb = new Playback({
 	events : recordedSession.events,
-	res: recordedSession.resources,
+	sessionId: recordedSession.sessionId,
 	start: true
 });
